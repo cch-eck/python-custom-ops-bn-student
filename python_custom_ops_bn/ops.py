@@ -31,8 +31,8 @@ def batchnorm_forward(
         invstd = (var + eps).rsqrt()
 
         # 2. normalize
-        running_mean.mul_(momentum).add_(mean * (1 - momentum))
-        running_var.mul_(momentum).add_(var * (1 - momentum))
+        running_mean.mul_(1 - momentum).add_(mean * momentum)
+        running_var.mul_(1 - momentum).add_(var * momentum)
 
         save_mean = mean.clone()
         save_invstd = invstd.clone()
