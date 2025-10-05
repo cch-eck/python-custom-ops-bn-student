@@ -59,6 +59,12 @@ def test_custom_batchnorm():
     mean_diff = torch.abs(running_mean - bn_pytorch.running_mean).max().item()
     var_diff = torch.abs(running_var - bn_pytorch.running_var).max().item()
 
+    print(f"\n2. Backward Pass")
+    print(f"   Input grad diff: {input_grad_diff:.2e}")
+    print(f"   Gamma grad diff: {gamma_grad_diff:.2e}")
+    print(f"   Beta grad diff: {beta_grad_diff:.2e}")
+    print(f"   Running mean diff: {mean_diff:.2e}")
+    print(f"   Running var diff: {var_diff:.2e}")
 
     # Overall result
     all_passed = all(diff < 1e-3 for diff in [forward_diff, input_grad_diff, gamma_grad_diff, beta_grad_diff, mean_diff, var_diff])
