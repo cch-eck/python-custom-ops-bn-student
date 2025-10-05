@@ -29,12 +29,19 @@ def batchnorm_forward(
         mean = input.mean(dim=(1, 2, 3))  # [C]
         var = input.var(dim=(1, 2, 3), unbiased=False)  # [C]
         invstd = (var + eps).rsqrt()
+
         # 2. normalize
         running_mean.mul_(momentum).add_(mean * (1 - momentum))
         running_var.mul_(momentum).add_(var * (1 - momentum))
+
+        save_mean = mean.clone()
+        save_invstd = invstd.clone()
+
     else:
         mean = running_mean
         invstd = (running_var + eps).rsqrt()
+        save_mean = mean.clone()
+        save_invstd = invstd.clone()
     
     # 3. scale 
     xhat = (input - mean[:, None, None, None]) * invstd[:, None, None, None]
@@ -43,9 +50,7 @@ def batchnorm_forward(
     
     # 4. reshape back to [N, C, H, W]
     output = output.permute(1, 0, 2, 3).contiguous()  # [N, C, H, W]
-    
-    save_mean = mean
-    save_invstd = invstd
+
     return output, save_mean, save_invstd
 
 
